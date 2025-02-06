@@ -203,7 +203,7 @@ def is_point_near_segment(segment_start, segment_end, point, threshold):
 
 
 def create_ride(request):
-    api_key = 'AIzaSyAHYezyDH5fTt69pSukaWV7bnUz1IV3iro'
+    api_key = 'YOUR API KEY'
     gmaps = googlemaps.Client(key=api_key)
 
     if request.method == "POST":
