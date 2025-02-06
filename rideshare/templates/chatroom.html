@@ -1,0 +1,99 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chatroom</title>
+  <link rel="stylesheet" href="{% static 'homeStyle.css' %}">
+  <!-- <link rel="stylesheet" href="{% static 'chatroomStyle.css' %}"> -->
+  <link rel="stylesheet" href="{% static 'club.css' %}">
+</head>
+<body style="background-image: url('{% static "heome2.jpg" %}'); background-size: cover; background-position: center; background-repeat: no-repeat; color: #333;">
+  <header>
+    <h1>Ride Share</h1>
+  </header>
+
+  <main>
+    <div class="chat-container">
+      <h2>Available Clubs</h2>
+
+      <div class="club-list">
+        {% for group in groups %}
+          <div class="club-item">
+            <strong>{{ group.source }} → {{ group.destination }}</strong><br>
+            {% if group.female_only %}
+              <span>[Female Only]</span><br>
+            {% endif %}
+            <p>{{ group.member_count }}/4 members</p>
+            <a href="{% url 'pin_board' group.id %}">
+              <button>Join</button>
+            </a>
+          </div>
+        {% empty %}
+          <div class="club-item">
+            <p>No clubs available.</p>
+          </div>
+        {% endfor %}
+      </div>
+
+      <button class="btn-success" id="createGroupBtn">Create a Club</button>
+
+      <!-- Pop-up Form Modal -->
+      <div id="createGroupModal" class="modal">
+        <div class="modal-content">
+          <span class="close" id="closeModal">&times;</span>
+          <h2>Create a Club</h2>
+          <form id="createGroupForm" method="POST" action="{% url 'create_group' %}">
+            {% csrf_token %}
+            <label for="source">Source:</label>
+            <input type="text" name="source" id="source" required><br>
+
+            <label for="destination">Destination:</label>
+            <input type="text" name="destination" id="destination" required><br>
+
+            <label for="day_of_journey">Day of Journey:</label>
+            <input type="text" name="day_of_journey" id="day_of_journey" required><br>
+
+            <label for="time_of_journey">Time of Journey:</label>
+            <input type="time" name="time_of_journey" id="time_of_journey" required><br>
+
+            <label for="female_only">Female Only:</label>
+            <input type="checkbox" name="female_only" id="female_only"><br>
+
+            <button type="submit">Create Group</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <a href="{% url 'home' %}"><button class="footer-btn">Home</button></a>
+    <a href="{% url 'chatroom' %}"><button class="footer-btn">Club</button></a>
+    <a href="{% url 'previous_rides' %}"><button class="footer-btn">Previous rides</button></a>
+    <a href="{% url 'profile' %}"><button class="footer-btn">Profile</button></a>
+  </footer>
+
+  <script>
+    // Show modal on button click
+    document.getElementById("createGroupBtn").onclick = function() {
+      document.getElementById("createGroupModal").style.display = "block";
+    };
+
+    // Close modal when the user clicks on <span> (x)
+    document.getElementById("closeModal").onclick = function() {
+      document.getElementById("createGroupModal").style.display = "none";
+    };
+
+    // Close modal if the user clicks anywhere outside the modal
+    window.onclick = function(event) {
+      if (event.target === document.getElementById("createGroupModal")) {
+        document.getElementById("createGroupModal").style.display = "none";
+      }
+    };
+  </script>
+
+</body>
+</html>
